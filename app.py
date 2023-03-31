@@ -13,14 +13,17 @@ def helper(message: telebot.types.Message):
             Пример: доллар рубль 5\n\
            Увидеть список всех доступных валют: /values"
     bot.reply_to(message, text)
+    bot.send_message(message.chat.id, f"Готов начать работать\nID нашего чата:{message.chat.id}")
 
 
 @bot.message_handler(commands=['values'])
 def values(message: telebot.types.Message):
     text = 'Доступные валюты:'
+    info_text = 'Есть еще вопросы по использованию?: /help'
     for key in keys.keys():
-        text = '\n'.join((text, key, ))
-    bot.reply_to(message, text)
+        text = '\n'.join((text, key))
+    bot.reply_to(message, text,)
+    bot.reply_to(message, info_text,)
 
 
 @bot.message_handler(content_types=['text', ])
@@ -40,6 +43,11 @@ def convert(message: telebot.types.Message):
     else:
         text = f'Цена {amount} {quote.lower()} в {base.lower()} - {total_base}'
         bot.send_message(message.chat.id, text)
+
+
+@bot.message_handler(content_types=['photo', 'audio', 'video'])
+def photo_format(message: telebot.types.Message):
+    bot.reply_to(message, 'Хорошая, но что мне с этим делать?\nЯ работаю с текстовым контентом\n/help или /values')
 
 
 bot.polling(none_stop=True)
