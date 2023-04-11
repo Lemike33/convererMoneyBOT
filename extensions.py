@@ -8,7 +8,7 @@ class APIException(Exception):
 
 
 class MoneyConverter:
-    """ Класс реализует функцию конвертации валют"""
+    """Класс реализует функцию конвертации валют."""
     @staticmethod
     def get_price(quote: str, base: str, amount: str) -> float:
 

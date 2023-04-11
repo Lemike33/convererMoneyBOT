@@ -41,7 +41,7 @@ def convert(message: telebot.types.Message):
     except Exception as e:
         bot.reply_to(message, f'не удалось обработать команду {e}')
     else:
-        text = f'Цена {amount} {quote.lower()} в {base.lower()} - {total_base}'
+        text = f'Цена {amount} {quote.lower()} в {base.lower()} = {total_base}'
         bot.send_message(message.chat.id, text)
 
 
@@ -51,3 +51,5 @@ def photo_format(message: telebot.types.Message):
 
 
 bot.polling(none_stop=True)
+
+
