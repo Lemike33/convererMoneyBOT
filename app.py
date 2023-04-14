@@ -23,9 +23,10 @@ def helper(message: telebot.types.Message):
     btn6 = types.KeyboardButton('рубль йена 100')
     buttons.row(btn4, btn5, btn6)
     bot.reply_to(message, text)
-    bot.send_message(message.chat.id, f"Готов начать работать\nID нашего чата:{message.chat.id}", reply_markup=buttons)
+    bot.send_message(message.chat.id, f"Готов начать работать с вами {message.from_user.first_name}\nID нашего чата:{message.chat.id}", reply_markup=buttons)
 
 
+# Обработчик команды /values : выводит список доступных валют и кнопку для перехода на сайт с api конвертации валют
 @bot.message_handler(commands=['values'])
 def values(message: telebot.types.Message):
     text = 'Доступные боту валюты:'
@@ -36,6 +37,7 @@ def values(message: telebot.types.Message):
     bot.reply_to(message, text, reply_markup=btn)
 
 
+# Обработчик запроса на конвертацию, вызывает метод get_price() из модуля extensions
 @bot.message_handler(content_types=['text', ])
 def convert(message: telebot.types.Message):
     btn = types.InlineKeyboardMarkup()
@@ -44,7 +46,7 @@ def convert(message: telebot.types.Message):
         values = message.text.split(' ')
 
         if len(values) != 3:
-            raise APIException('Слишком много параметров!')
+            raise APIException('Неверное число параметров!, должно быть 3 через пробел')
 
         quote, base, amount = values
         total_base = MoneyConverter.get_price(quote, base, amount)
@@ -57,6 +59,7 @@ def convert(message: telebot.types.Message):
         bot.send_message(message.chat.id, text,  reply_markup=btn)
 
 
+# Обработчик кнопки "Удалить последний запрос" удаляет как сам запрос пользователя, так и ответ бота
 @bot.callback_query_handler(func=lambda callback: True)
 def callback_func(callback):
     if callback.data == 'remove':
@@ -64,8 +67,9 @@ def callback_func(callback):
         bot.delete_message(callback.message.chat.id, callback.message.message_id - 1)
 
 
+# Обработчик запроса с нестроковым типом данных
 @bot.message_handler(content_types=['photo', 'audio', 'video'])
-def photo_format(message: telebot.types.Message):
+def another_format(message: telebot.types.Message):
     bot.reply_to(message, 'Хорошая, но что мне с этим делать?\nЯ работаю с текстовым контентом\n/help или /values')
 
 
